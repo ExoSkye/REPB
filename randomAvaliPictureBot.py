@@ -20,7 +20,7 @@ class RAPB(discord.Client):
                 if len(return_json["posts"]) == 0:
                     await message.channel.send("That search didn't find anything, please check your query")
                 else:
-                    idx = random.randint(0,len(return_json["posts"]-1))
+                    idx = random.randint(0,len(return_json["posts"])-1)
                     artists = return_json["posts"][idx]["tags"]["artist"]
                     image_location = return_json["posts"][idx]["file"]["url"]
                     if len(artists) == 0:
