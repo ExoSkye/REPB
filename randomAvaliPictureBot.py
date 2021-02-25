@@ -6,7 +6,7 @@ class RAPB(discord.Client):
         self.query = "avali"
 
     async def getpic(self,url, message):
-        if message.channel.name in self.get_channel_settings():
+        if message.channel.id in self.get_channel_settings():
             headers = {
                     "User-Agent": "RandomAvaliPicDiscordBot/1.0 (by ProtoByte on e926)"
                 }
@@ -49,7 +49,7 @@ class RAPB(discord.Client):
             return
 
         elif message.content == '!getpic':
-            await self.getpic('https://e926.net/posts.json?tags='+self.get_channel_settings()[message.channel.name]+'&limit=320',message)
+            await self.getpic('https://e926.net/posts.json?tags='+self.get_channel_settings()[message.channel.id]+'&limit=320',message)
         
         elif message.content == '!getnsfwpic':
             lewd_role = False
@@ -59,7 +59,7 @@ class RAPB(discord.Client):
                         break
             if lewd_role:
                 if message.channel.is_nsfw():
-                    await self.getpic('https://e621.net/posts.json?tags=rating:m rating:q '+self.get_channel_settings()[message.channel.name]+'&limit=320',message)
+                    await self.getpic('https://e621.net/posts.json?tags=rating:m rating:q '+self.get_channel_settings()[message.channel.id]+'&limit=320',message)
                 else:
                     await message.channel.send("This is a non-NSFW channel, please run this in an NSFW channel")
             else:
@@ -69,9 +69,9 @@ class RAPB(discord.Client):
         elif message.content[:9] == "!setquery":
             if message.author.permissions_in(message.channel).administrator:
                 channels = self.get_channel_settings()
-                channels[message.channel.name] = message.content[10:]
+                channels[message.channel.id] = message.content[10:]
                 self.save_channel_settings(channels)
-                await message.channel.send("Successfully set the search query to "+self.get_channel_settings()[message.channel.name])
+                await message.channel.send("Successfully set the search query to "+self.get_channel_settings()[message.channel.id])
             else:
                 await message.channel.send("You aren't allowed to do that")
 
@@ -87,7 +87,7 @@ class RAPB(discord.Client):
         elif message.content == "!allowpost":
             if message.author.permissions_in(message.channel).administrator:
                 channels = self.get_channel_settings()
-                channels[message.channel.name] = "avali_(original)"
+                channels[message.channel.id] = "avali_(original)"
                 self.save_channel_settings(channels)
                 await message.channel.send("I can now post here")
             else:
