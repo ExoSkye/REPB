@@ -49,7 +49,7 @@ class RAPB(discord.Client):
             return
 
         elif message.content == '!getpic':
-            await self.getpic('https://e926.net/posts.json?tags='+self.get_channel_settings()[message.channel.id]+'&limit=320',message)
+            await self.getpic('https://e926.net/posts.json?tags=order:random '+self.get_channel_settings()[message.channel.id]+'&limit=320',message)
         
         elif message.content == '!getnsfwpic':
             lewd_role = False
@@ -59,7 +59,7 @@ class RAPB(discord.Client):
                         break
             if lewd_role:
                 if message.channel.is_nsfw():
-                    await self.getpic('https://e621.net/posts.json?tags=rating:m rating:q '+self.get_channel_settings()[message.channel.id]+'&limit=320',message)
+                    await self.getpic('https://e621.net/posts.json?tags=order:random rating:m rating:q '+self.get_channel_settings()[message.channel.id]+'&limit=320',message)
                 else:
                     await message.channel.send("This is a non-NSFW channel, please run this in an NSFW channel")
             else:
