@@ -20,10 +20,12 @@ class RAPB(discord.Client):
                 if len(return_json["posts"]) == 0:
                     await message.channel.send("That search didn't find anything, please check your query")
                 else:
-                    idx = random.randint(0,len(return_json["posts"]))
+                    idx = random.randint(0,len(return_json["posts"]-1))
                     artists = return_json["posts"][idx]["tags"]["artist"]
                     image_location = return_json["posts"][idx]["file"]["url"]
-                    await message.channel.send("Got this piece of art by "+" and ".join(artists)+". Available here: "+image_location)
+                    if len(artists) == 0:
+                        artists.append("a mysterious person")
+                    await message.channel.send("Got this picture by "+" and ".join(artists)+". Available here: "+image_location)
         
         else:
             await message.channel.send("I'm not allowed to post here")
