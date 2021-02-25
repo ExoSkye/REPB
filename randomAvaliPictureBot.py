@@ -49,22 +49,22 @@ class RAPB(discord.Client):
             return
 
         elif message.content == '!getpic':
-            await self.getpic('https://e926.net/posts.json?tags=order:random '+self.get_channel_settings()[message.channel.id]+'&limit=320',message)
-        
-        elif message.content == '!getnsfwpic':
             lewd_role = False
             for role in message.author.roles:
                     if role.name == "Lewd":
                         lewd_role = True
                         break
-            if lewd_role:
-                if message.channel.is_nsfw():
+
+            if message.channel.is_nsfw():
+                if lewd_role:
                     await self.getpic('https://e621.net/posts.json?tags=order:random rating:m rating:q '+self.get_channel_settings()[message.channel.id]+'&limit=320',message)
                 else:
-                    await message.channel.send("This is a non-NSFW channel, please run this in an NSFW channel")
+                    await message.channel.send(
+                        "You are not authorised to ask for an NSFW picture, please make sure that you have the @Lewd role")
             else:
-                await message.channel.send("You are not authorised to ask for an NSFW picture, please make sure that you have the @Lewd role")
-                
+                await self.getpic('https://e926.net/posts.json?tags=order:random ' + self.get_channel_settings()[
+                    message.channel.id] + '&limit=320', message)
+
 
         elif message.content[:9] == "!setquery":
             if message.author.permissions_in(message.channel).administrator:
@@ -77,8 +77,7 @@ class RAPB(discord.Client):
 
         elif message.content == "!help":
             await message.channel.send("""Possible commands:
-            !getpic     - Gets a picture from e926 using the query set by an admin
-            !getnsfwpic - Gets a picture from e621 using the query set by an admin
+            !getpic     - Gets a picture from e926 or e621 (dependent on having a lewd role and being in an nsfw chat) using the query set by an admin
             !setquery   - Sets the query to search with (admin only)
             !help       - Prints this help
             !allowpost  - Adds the current channel to channels that this bot can use
