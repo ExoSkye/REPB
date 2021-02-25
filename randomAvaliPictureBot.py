@@ -1,13 +1,12 @@
-import json, requests, random, discord
+import json, requests, random, discord, pickle
 
 class RAPB(discord.Client):
     async def on_ready(self):
         print('Logged on as', self.user)
         self.query = "avali"
-        self.channels = {}
 
     async def getpic(self,url, message):
-        if message.channel in self.channels:
+        if message.channel.name in self.get_channel_settings():
             headers = {
                     "User-Agent": "RandomAvaliPicDiscordBot/1.0 (by ProtoByte on e926)"
                 }
@@ -29,13 +28,26 @@ class RAPB(discord.Client):
         else:
             await message.channel.send("I'm not allowed to post here")
 
+    def get_channel_settings(self):
+        channels = {}
+        try:
+            with open("channels.pickle",'rb') as channel_file:
+                channels = pickle.load(channel_file)
+        except:
+            pass
+        return channels
+
+    def save_channel_settings(self,channel):
+        with open("channels.pickle",'wb+') as channel_file:
+            pickle.dump(channel,channel_file)
+
     async def on_message(self, message):
         # don't respond to ourselves
         if message.author == self.user:
             return
 
         elif message.content == '!getpic':
-            await self.getpic('https://e926.net/posts.json?tags='+self.channels[message.channel]+'&limit=320',message)
+            await self.getpic('https://e926.net/posts.json?tags='+self.get_channel_settings()[message.channel.name]+'&limit=320',message)
         
         elif message.content == '!getnsfwpic':
             lewd_role = False
@@ -45,7 +57,7 @@ class RAPB(discord.Client):
                         break
             if lewd_role:
                 if message.channel.is_nsfw():
-                    await self.getpic('https://e621.net/posts.json?tags=rating:m rating:q '+self.channels[message.channel]+'&limit=320',message)
+                    await self.getpic('https://e621.net/posts.json?tags=rating:m rating:q '+self.get_channel_settings()[message.channel.name]+'&limit=320',message)
                 else:
                     await message.channel.send("This is a non-NSFW channel, please run this in an NSFW channel")
             else:
@@ -54,8 +66,10 @@ class RAPB(discord.Client):
 
         elif message.content[:9] == "!setquery":
             if message.author.permissions_in(message.channel).administrator:
-                self.channels[message.channel] = message.content[10:]
-                await message.channel.send("Successfully set the search query to "+self.channels[message.channel])
+                channels = self.get_channel_settings()
+                channels[message.channel.name] = message.content[10:]
+                self.save_channel_settings(channels)
+                await message.channel.send("Successfully set the search query to "+self.get_channel_settings()[message.channel.name])
             else:
                 await message.channel.send("You aren't allowed to do that")
 
@@ -70,7 +84,9 @@ class RAPB(discord.Client):
 
         elif message.content == "!allowpost":
             if message.author.permissions_in(message.channel).administrator:
-                self.channels[message.channel] = "avali_(original)"
+                channels = self.get_channel_settings()
+                channels[message.channel.name] = "avali_(original)"
+                self.save_channel_settings(channels)
                 await message.channel.send("I can now post here")
             else:
                 await message.channel.send("You aren't allowed to do that")
