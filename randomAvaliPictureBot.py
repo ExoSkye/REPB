@@ -26,7 +26,7 @@ class RAPB(discord.Client):
                     if len(artists) == 0:
                         artists.append("a mysterious person")
                     await message.channel.send("Got this picture by "+" and ".join(artists)+". Available here: "+image_location)
-        
+
         else:
             await message.channel.send("I'm not allowed to post here")
 
@@ -47,6 +47,9 @@ class RAPB(discord.Client):
         # don't respond to ourselves
         if message.author == self.user:
             return
+
+        elif message.content == '!gethelp':
+             await message.channel.send('https://www.youtube.com/watch?v=OANob2HpS4o')
 
         elif message.content == '!getpic':
             lewd_role = False
