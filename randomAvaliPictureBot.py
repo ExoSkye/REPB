@@ -23,6 +23,9 @@ class RAPB(discord.Client):
                     idx = random.randint(0,len(return_json["posts"])-1)
                     artists = return_json["posts"][idx]["tags"]["artist"]
                     image_location = return_json["posts"][idx]["file"]["url"]
+                    for artist in artists:
+                        if artist == "conditional_dnp":
+                            artists.remove(artist)
                     if len(artists) == 0:
                         artists.append("a mysterious person")
                     await message.channel.send("Got this picture by "+" and ".join(artists)+". Available here: "+image_location)
