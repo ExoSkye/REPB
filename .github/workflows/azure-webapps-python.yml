@@ -74,6 +74,10 @@ jobs:
           name: python-app
           path: .
           
+      - name: Add token
+        run:
+          echo "${{ secrets.DISCORD_TOKEN }}" > .token
+          
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
