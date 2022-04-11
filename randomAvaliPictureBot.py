@@ -1,4 +1,4 @@
-import json, requests, random, discord, pickle
+import json, requests, random, discord, pickle, os
 from discord.utils import get
 
 class RAPB(discord.Client):
@@ -201,6 +201,5 @@ class RAPB(discord.Client):
 intents = discord.Intents.default()
 intents.members = True
 client = RAPB(intents=intents)
-with open(".token") as tokenfile:
-    key = tokenfile.read()
-    client.run(key)
+key = os.environ.get("TOKEN")
+client.run(key)
