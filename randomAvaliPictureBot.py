@@ -81,7 +81,20 @@ class RAPB(discord.Client):
         elif message.content == '!gethelp':
             await message.channel.send('https://www.youtube.com/watch?v=OANob2HpS4o')
 
-        elif message.content == '!getpic':
+        elif message.content.startswith('!getpic'):
+
+            params = message.content.split(' ')
+
+            if len(params) != 2:
+                message.channel.send("Please provide a page number")
+                return
+
+            try:
+                int(params[1])
+            except:
+                message.channel.send("Page parameter of the command must be an integer")
+                return
+
             lewd_role = False
             for role in message.author.roles:
                 if role.name == "Lewd":
@@ -91,13 +104,13 @@ class RAPB(discord.Client):
             if message.channel.is_nsfw():
                 if lewd_role:
                     await self.getpic('https://e621.net/posts.json?tags=order:random rating:m rating:q ' +
-                                      self.get_channel_settings()[message.channel.id] + '&limit=320', message)
+                                      self.get_channel_settings()[message.channel.id] + '&limit=320&page='+str(int(params[1])), message)
                 else:
                     await message.channel.send(
                         "You are not authorised to ask for an NSFW picture, please make sure that you have the @Lewd role")
             else:
                 await self.getpic('https://e926.net/posts.json?tags=order:random ' + self.get_channel_settings()[
-                    message.channel.id] + '&limit=320', message)
+                    message.channel.id] + '&limit=320&page='+str(int(params[1])), message)
 
 
         elif message.content[:9] == "!setquery":
